@@ -1,0 +1,8 @@
+
+ul {
+    list-style-type: none; /* Remove bullets */
+}
+
+li {
+    text-transform: capitalize; /* capitalize first letter */
+}
