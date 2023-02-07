@@ -6,9 +6,17 @@ let queryURL2 = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon
 
 let queryURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKey}`;
 
+//get city from search input with the submit button
+let searchButton = $("#search-button")
 
+searchButton.on("click", (event) => {
+  event.preventDefault();
+  city = $("#search-input").val().trim();
+  $("#search-input").val("");
+  console.log(city);
+});
 
-
+/*
 // created an AJAX call
 $.ajax({
   url: queryURL,
@@ -30,11 +38,11 @@ $.ajax({
   $(".wind").text(`Wind Speed: ${response.wind.speed}`)
   $(".humidity").text(`Humidity: ${response.main.humidity}`)
   $(".temp").text(`Temperature [degC]: ${(response.main.temp - 273.15).toFixed(1)}`)
-*/
-
-});
 
 
+});*/
+
+/*
 // created an AJAX call
 $.ajax({
   url: queryURL2,
@@ -56,7 +64,7 @@ $.ajax({
   $(".wind").text(`Wind Speed: ${response.wind.speed}`)
   $(".humidity").text(`Humidity: ${response.main.humidity}`)
   $(".temp").text(`Temperature [degC]: ${(response.main.temp - 273.15).toFixed(1)}`)
-*/
 
-});
+
+});*/
 
