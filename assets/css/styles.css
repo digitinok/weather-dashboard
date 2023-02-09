@@ -6,3 +6,14 @@ ul {
 li {
     text-transform: capitalize; /* capitalize first letter */
 }
+
+button {
+    display: block;
+    text-transform: capitalize; /* capitalize first letter */
+    margin: 5px;
+    border-radius: 5px;
+}
+
+#history-list {
+    border-top: 1px grey solid;
+}
