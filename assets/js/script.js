@@ -1,6 +1,6 @@
-let lat  = "51.5";
-let lon = "0";
-let queryType = "weather";  //forecast
+//let lat  = "51.5";
+//let lon = "0";
+//let queryType = "weather";  //forecast
 const APIKey = "4ddb322a76968b6cb599fa2b021f691b";
 //let queryURL = `https://api.openweathermap.org/data/2.5/${queryType}?lat=${lat}&lon=${lon}&appid=${APIKey}`;
 //let queryURL2 = `http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit=1&appid=${APIKey}`;
@@ -8,9 +8,10 @@ let historyListEl = $("#history-list");
 
 
 let getWeather = (event) => {
-  let city = event.target.dataset.city;
+  let city = event.target.dataset;
   console.log(city);
-  getCurrentWeather("weather", lat, lon, APIKey);
+
+  getCurrentWeather("weather", event.target.dataset.lat, event.target.dataset.lon, APIKey);
 }
 
 
@@ -18,12 +19,16 @@ let getWeather = (event) => {
 let renderCitySearchHistory = () => {
   const cities = JSON.parse(localStorage.getItem('cities'));
   for (let i=0; i<cities.length; i++) {
-    let itemEl = $("<li>");
-    let cityEl = $("<button>").text(cities[i]);
-    cityEl.attr("data-city", cities[i]);
+    let itemEl = $("<li>").text(cities[i].name);;
+    //let cityEl = $("<button>").text(cities[i].name);
+    //cityEl.attr("data-city", cities[i].name);
+    itemEl.attr("data-city", cities[i].name);
+    itemEl.attr("data-lon", cities[i].lon);
+    itemEl.attr("data-lat", cities[i].lat);
     // display weather data
-    cityEl.on("click", getWeather);
-    itemEl.append(cityEl);
+    //cityEl.on("click", getWeather);
+    itemEl.on("click", getWeather);
+    //itemEl.append(cityEl);
     historyListEl.append(itemEl);
   }
 }
@@ -86,15 +91,24 @@ searchButton.on("click", (event) => {
       url: queryURL2,
       method: "GET"
     }).then(function(response) {
-      console.log(response)
-
+      console.log(response[0])
+      console.log(response[0].lat, response[0].lon)
+      /* country
+      lat
+      local_names
+      lon
+      name
+      state */
+      cities.push(response[0] );
+      localStorage.setItem("cities", JSON.stringify(cities));
+      renderCitySearchHistory();
+      getCurrentWeather("weather", response[0].lat, response[0].lon, APIKey);
+      getForcastWeather = ("forecast", response[0].lat, response[0].lon, APIKey);
     });
 
-    cities.push(city);
-    localStorage.setItem("cities", JSON.stringify(cities));
-    renderCitySearchHistory();
+    //getCurrentWeather("weather", response.lat, response.lon, APIKey);
   }
-  getCurrentWeather("weather", lat, lon, APIKey);
+  
 });
 
 
@@ -103,17 +117,17 @@ renderCitySearchHistory();
 
 
 // display the 5 day Weather Forcast
-let getCForcastWeather = (queryType="forecast", lat, lon, APIKey) => {
+let getForcastWeather = (queryType="forecast", lat, lon, APIKey) => {
   let queryURL = `https://api.openweathermap.org/data/2.5/${queryType}?lat=${lat}&lon=${lon}&appid=${APIKey}`;
 
   // created an AJAX call for 5 day weather forecast
   $.ajax({
     url: queryURL,
     method: "GET"
-  }).then(function(response) {``
+  }).then(function(response) {
     console.log(response)
 
 });
 }
 
-getCForcastWeather = ("forecast", lat, lon, APIKey);
+//getForcastWeather = ("forecast", lat, lon, APIKey);

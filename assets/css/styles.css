@@ -4,12 +4,20 @@ ul {
 }
 
 li {
-    text-transform: capitalize; /* capitalize first letter */
+    margin: 5px;
+    border-radius: 5px;
+    border: 1px darkgrey solid;
+    background-color: darkslategrey;
+    text-align: center;
+    color: aliceblue;
+}
+
+li:hover {
+    background-color: rgb(21, 43, 43);
+    cursor: pointer;
 }
 
 button {
-    display: block;
-    text-transform: capitalize; /* capitalize first letter */
     margin: 5px;
     border-radius: 5px;
 }
