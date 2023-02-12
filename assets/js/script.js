@@ -119,7 +119,7 @@ let citySearch = () => {
   // get longitude and latitude for the new city 
   // created an AJAX call for location data 
   $.ajax({
-    url: `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${APIKey}`,
+    url: `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${APIKey}`,
     method: "GET"
   }).then(function(response) {
     /* country, lat, local_names, lon, name, state */
