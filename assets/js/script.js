@@ -93,65 +93,78 @@ let getCurrentWeather = (queryType="weather", lat, lon, APIKey) => {
   }); 
 }
 
+let citySearch = () => {
+  // initialise cities array, get cities from local storage
+  let cities = JSON.parse(localStorage.getItem('cities'));
+  if (cities === null) {cities = {};}
+
+  // read the value from the input field 
+  let city = $("#search-input").val().toLowerCase().trim();
+  $("#search-input").val("");
+
+  // check if city is already in list
+  if (city === "") {return}
+  //for (let i=0; i<cities.length; i++) {
+
+    if (city in cities) {
+      // display city name, weather, forcast and return
+      displayWeather(cities[city].name, cities[city].lat, cities[city].lon);
+      return
+    } 
+  //} 
+  // get longitude and latitude for the new city 
+  // created an AJAX call for location data 
+  $.ajax({
+    url: `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${APIKey}`,
+    method: "GET"
+  }).then(function(response) {
+    /* country, lat, local_names, lon, name, state */
+    if (response.length >   0) {
+      
+      // searched cities saved to local storage and buttons rendered
+      cities[city] = {
+        name: response[0].name,
+        lat: response[0].lat,
+        lon: response[0].lon,
+        country: response[0].country}; 
+
+      localStorage.setItem("cities", JSON.stringify(cities));
+      renderCitySearchHistory();
+      // display city name, weather, forcast and return
+      displayWeather(cities[city].name, cities[city].lat, cities[city].lon);
+    } else {
+      alert(`Sorry, I could not find the place you are looking for!`);
+    }
+  });
+}
+
 
 // wait until the page has loaded
 $(window).on('load', () => {
   
   // initialise cities array, get cities from local storage
   let cities = JSON.parse(localStorage.getItem('cities'));
-  if (cities === null) {cities = {};}
+  if (cities === null) {
+    cities = {};
+    // as default show the weather for London
+    displayWeather("London", 51.5073219, -0.1276474);
+  }
+  else {
+    // display search history of all previously searched cities
+    renderCitySearchHistory();
+    // display the weather of the first city saved  
+    const city = Object.keys(cities)[0];
+    displayWeather(cities[city].name, cities[city].lat, cities[city].lon);
+    console.log(city);
+  }
 
   // get city from search input with the submit button
   let searchButton = $("#search-button")
   searchButton.on("click", (event) => {
     event.preventDefault();
-    let city = $("#search-input").val().toLowerCase().trim();
-    $("#search-input").val("");
-
-    // check if city is already in list
-    if (city === "") {return}
-    //for (let i=0; i<cities.length; i++) {
-
-      if (city in cities) {
-        // display city name, weather, forcast and return
-        displayWeather(cities[city].name, cities[city].lat, cities[city].lon);
-        return
-      } 
-    //} 
-    // get longitude and latitude for the new city 
-    // created an AJAX call for location data 
-    $.ajax({
-      url: `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${APIKey}`,
-      method: "GET"
-    }).then(function(response) {
-      /* country, lat, local_names, lon, name, state */
-      if (response.length >   0) {
-        
-        // searched cities saved to local storage and buttons rendered
-        cities[city] = {
-          name: response[0].name,
-          lat: response[0].lat,
-          lon: response[0].lon,
-          country: response[0].country}; 
-
-        localStorage.setItem("cities", JSON.stringify(cities));
-        renderCitySearchHistory();
-        // display city name, weather, forcast and return
-        displayWeather(cities[city].name, cities[city].lat, cities[city].lon);
-      } else {
-        alert(`Sorry, I could not find the place you are looking for!`);
-      }
-    });
+    citySearch();
   });
     
-  // display search history of all previously searched cities
-  renderCitySearchHistory();
-  // as default show the weather for London
-  //displayWeather("London", 51.5073219, -0.1276474);
-  const city = Object.keys(cities)[0];
-  displayWeather(cities[city].name, cities[city].lat, cities[city].lon);
-  console.log(city);
-
 });
 
 
