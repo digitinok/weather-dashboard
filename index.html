@@ -30,7 +30,7 @@
               <input class="form-input weather-search" type="text" id="search-input" placeholder="London"
                 aria-labelledby="form-heading" aria-controls="today forecast" />
               <div class="input-group-append">
-                <button type="submit" class="btn search-button" id="search-button" aria-label="submit search">
+                <button type="submit" class="btn search-button bg-dark text-white" id="search-button" aria-label="submit search">
                   Search
                 </button>
                 <hr class="hr weather-hr" />
@@ -45,25 +45,24 @@
 
       <div class="col-lg-9 pb-3">
         <h2 id="city" ></h2>
-        <section id="today" class="mt-3" role="region" aria-live="polite">
-          <h4>Today's Weather</h4>
-          <div class="card-body">
+        <section id="today" class="mt-3 border-dark" role="region" aria-live="polite">
+          <h4>Today's Weather:</h4>
+          <div class="card-body border-dark">
             <h5 class="card-title" id="date"></h5>
-            <p class="card-text" id="weather"><img id="weather-icon" src="http://openweathermap.org/img/wn/01d.png" alt="weather icon"/></p>
+            <p class="card-text" id="weather-img"></p>
+            <p class="card-text" id="weather"></p>
             <p class="card-text" id="temp"></p>
             <p class="card-text" id="humidity"></p>
             <p class="card-text" id="wind"></p>
           </div>
         </section>
-        <section id="forecast" class="mt-3" role="region" aria-live="polite">
-          <h4>5-Day Forcast</h4>
-          <div class="card-body">
-            <h5 class="card-title" id="dateF1"></h5>
-            <p class="card-text" id="weatherF1"><img id="weather-iconF1" src=""/></p>
-            <p class="card-text" id="tempF1"></p>
-            <p class="card-text" id="humidityF1"></p>
-            <p class="card-text" id="windF1"></p>
-          </div>
+        <h4>5-Day Forcast:</h4>
+        <section id="forecast" class="row mt-3" role="region" aria-live="polite">
+          <div class="card-body text-white bg-dark m-2" id="0"></div>
+          <div class="card-body text-white bg-dark m-2" id="1"></div>
+          <div class="card-body text-white bg-dark m-2" id="2"></div>
+          <div class="card-body text-white bg-dark m-2" id="3"></div>
+          <div class="card-body text-white bg-dark m-2" id="4"></div>
         </section>
       </div>
     </div>
