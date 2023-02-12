@@ -1,20 +1,16 @@
-//let lat  = "51.5";
-//let lon = "0";
-//let queryType = "weather";  //forecast
 const APIKey = "4ddb322a76968b6cb599fa2b021f691b";
-//let queryURL = `https://api.openweathermap.org/data/2.5/${queryType}?lat=${lat}&lon=${lon}&appid=${APIKey}`;
-//let queryURL2 = `http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit=1&appid=${APIKey}`;
 
-
+let displayWeather = (city, lat, lon) => {
+  // display current weather
+  $("#city").text(`${city}`);
+  getCurrentWeather("weather", lat, lon, APIKey);
+  getForcastWeather("forecast", lat, lon, APIKey);
+}
 
 let getWeather = (event) => {
-
-
-  console.log(event.target.dataset.city);
-  // city name  
-  $("#city").text(`${event.target.dataset.city}`);
-  getForcastWeather("forecast", event.target.dataset.lat, event.target.dataset.lon, APIKey);
-  getCurrentWeather("weather", event.target.dataset.lat, event.target.dataset.lon, APIKey);
+  // display the weather
+  data = event.target.dataset;
+  displayWeather(data.name, data.lat, data.lon);  
  }
 
 // display all the city search history as buttons to retrieve weather
@@ -27,7 +23,7 @@ let renderCitySearchHistory = () => {
   for (const city in cities) {
     if (cities[city] === null) {return}
     let itemEl = $("<li>").text(cities[city].name);
-    itemEl.attr("data-city", cities[city].name);
+    itemEl.attr("data-name", cities[city].name);
     itemEl.attr("data-lon", cities[city].lon);
     itemEl.attr("data-lat", cities[city].lat);
     // display weather data
@@ -39,14 +35,13 @@ let renderCitySearchHistory = () => {
 // display the 5 day Weather Forcast
 let getForcastWeather = (queryType="forecast", lat, lon, APIKey) => {
   let queryURL = `https://api.openweathermap.org/data/2.5/${queryType}?lat=${lat}&lon=${lon}&appid=${APIKey}`;
-console.log("Hello")
+
   // created an AJAX call for 5 day weather forecast
-  console.log("Hello")
   $.ajax({
     url: queryURL,
     method: "GET"
   }).then(function(response) {
-
+    console.log(response) 
     // find next lunchtime to display data
     let startTime = 5;
     let nextTime = startTime;
@@ -104,7 +99,6 @@ $(window).on('load', () => {
   
   // initialise cities array, get cities from local storage
   let cities = JSON.parse(localStorage.getItem('cities'));
-  console.log(cities);
   if (cities === null) {cities = {};}
 
   // get city from search input with the submit button
@@ -120,9 +114,7 @@ $(window).on('load', () => {
 
       if (city in cities) {
         // display city name, weather, forcast and return
-        $("#city").text(`${cities[city].name}`);
-        getCurrentWeather("weather", cities[city].lat, cities[city].lon, APIKey);
-        getForcastWeather("forecast", cities[city].lat, cities[city].lon, APIKey);
+        displayWeather(cities[city].name, cities[city].lat, cities[city].lon);
         return
       } 
     //} 
@@ -134,7 +126,7 @@ $(window).on('load', () => {
     }).then(function(response) {
       /* country, lat, local_names, lon, name, state */
       if (response.length >   0) {
-        console.log(response)
+        
         // searched cities saved to local storage and buttons rendered
         cities[city] = {
           name: response[0].name,
@@ -145,9 +137,7 @@ $(window).on('load', () => {
         localStorage.setItem("cities", JSON.stringify(cities));
         renderCitySearchHistory();
         // display city name, weather, forcast and return
-        $("#city").text(`${cities[city].name}`);
-        getCurrentWeather("weather", cities[city].lat, cities[city].lon, APIKey);
-        getForcastWeather("forecast", cities[city].lat, cities[city].lon, APIKey);
+        displayWeather(cities[city].name, cities[city].lat, cities[city].lon);
       } else {
         alert(`Sorry, I could not find the place you are looking for!`);
       }
@@ -156,6 +146,11 @@ $(window).on('load', () => {
     
   // display search history of all previously searched cities
   renderCitySearchHistory();
+  // as default show the weather for London
+  //displayWeather("London", 51.5073219, -0.1276474);
+  const city = Object.keys(cities)[0];
+  displayWeather(cities[city].name, cities[city].lat, cities[city].lon);
+  console.log(city);
 
 });
 
