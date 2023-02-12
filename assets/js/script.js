@@ -41,15 +41,20 @@ let getForcastWeather = (queryType="forecast", lat, lon, APIKey) => {
     url: queryURL,
     method: "GET"
   }).then(function(response) {
-    console.log(response) 
+
     // find next lunchtime to display data
-    let startTime = 5;
-    let nextTime = startTime;
+    let time = moment(response.list[0].dt*1000 + response.city.timezone*1000).format('H');
+    let startIndex = Math.abs(Math.floor((14-time)/3));
+    if (time > 14){
+      startIndex = Math.abs(Math.floor((24-time+14)/3));
+    }
+    
+    let index = startIndex;
 
     //5 day weather forcast
     for (let i=0; i<5; i++) {
       
-      if (i!==0){nextTime+=8;} // 8 time steps for 24 hours
+      if (i!==0){index+=8;} // 8 time steps for 24 hours
       let dateEl = $("<h5></h5>");
       let weatherImg = $("<p></p>");
       let weatherEl = $("<p></p>");
@@ -58,12 +63,12 @@ let getForcastWeather = (queryType="forecast", lat, lon, APIKey) => {
       let windEl = $("<p></p>");
 
       // display date, weather conditions, temperature, humidity, wind speed
-      dateEl.text(`${moment(response.list[nextTime].dt*1000 + response.city.timezone*1000).format('ddd, DD.MM.YY')}`);
-      weatherImg.html(`<img src="http://openweathermap.org/img/wn/${(response.list[nextTime].weather[0].icon)}.png"/>`);
-      weatherEl.text(`${response.list[nextTime].weather[0].description}`);
-      tempEl.text(`Temp: ${(response.list[nextTime].main.temp - 273.15).toFixed(1)} °C`); 
-      humidityEl.text(`Humidity: ${response.list[nextTime].main.humidity} %`);
-      windEl.text(`Wind: ${(response.list[nextTime].wind.speed * 3.6).toFixed(1)} km/h`);
+      dateEl.text(`${moment(response.list[index].dt*1000 + response.city.timezone*1000).format('ddd, DD.MM.YY')}`);
+      weatherImg.html(`<img src="http://openweathermap.org/img/wn/${(response.list[index].weather[0].icon)}.png"/>`);
+      weatherEl.text(`${response.list[index].weather[0].description}`);
+      tempEl.text(`Temp: ${(response.list[index].main.temp - 273.15).toFixed(1)} °C`); 
+      humidityEl.text(`Humidity: ${response.list[index].main.humidity} %`);
+      windEl.text(`Wind: ${(response.list[index].wind.speed * 3.6).toFixed(1)} km/h`);
       //append data to corresponding card
       $("#"+i.toString()).html("");
       $("#"+i.toString()).append(dateEl, weatherImg, weatherEl, tempEl, humidityEl, windEl);
@@ -104,14 +109,13 @@ let citySearch = () => {
 
   // check if city is already in list
   if (city === "") {return}
-  //for (let i=0; i<cities.length; i++) {
 
-    if (city in cities) {
-      // display city name, weather, forcast and return
-      displayWeather(cities[city].name, cities[city].lat, cities[city].lon);
-      return
-    } 
-  //} 
+  if (city in cities) {
+    // display city name, weather, forcast and return
+    displayWeather(cities[city].name, cities[city].lat, cities[city].lon);
+    return
+  } 
+
   // get longitude and latitude for the new city 
   // created an AJAX call for location data 
   $.ajax({
@@ -155,7 +159,6 @@ $(window).on('load', () => {
     // display the weather of the first city saved  
     const city = Object.keys(cities)[0];
     displayWeather(cities[city].name, cities[city].lat, cities[city].lon);
-    console.log(city);
   }
 
   // get city from search input with the submit button
