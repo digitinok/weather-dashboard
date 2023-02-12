@@ -64,7 +64,7 @@ let getForcastWeather = (queryType="forecast", lat, lon, APIKey) => {
 
       // display date, weather conditions, temperature, humidity, wind speed
       dateEl.text(`${moment(response.list[index].dt*1000 + response.city.timezone*1000).format('ddd, DD.MM.YY')}`);
-      weatherImg.html(`<img src="http://openweathermap.org/img/wn/${(response.list[index].weather[0].icon)}.png"/>`);
+      weatherImg.html(`<img src="https://openweathermap.org/img/wn/${(response.list[index].weather[0].icon)}.png"/>`);
       weatherEl.text(`${response.list[index].weather[0].description}`);
       tempEl.text(`Temp: ${(response.list[index].main.temp - 273.15).toFixed(1)} °C`); 
       humidityEl.text(`Humidity: ${response.list[index].main.humidity} %`);
@@ -89,7 +89,7 @@ let getCurrentWeather = (queryType="weather", lat, lon, APIKey) => {
     
     // display date, weather conditions, temperature, humidity, wind speed
     $("#date").text(`${moment(response.dt*1000 + response.timezone*1000).format('dddd, DD.MM.YYYY, HH:ss')}`);
-    $("#weather-img").html(`<img src="http://openweathermap.org/img/wn/${(response.weather[0].icon)}.png"/>`);
+    $("#weather-img").html(`<img src="https://openweathermap.org/img/wn/${(response.weather[0].icon)}.png"/>`);
     $("#weather").text(`${response.weather[0].description}`);
     $("#temp").text(`Temperature: ${(response.main.temp - 273.15).toFixed(1)} °C`); 
     $("#humidity").text(`Humidity: ${response.main.humidity} %`);
