@@ -17,11 +17,6 @@ li:hover {
     cursor: pointer;
 }
 
-button {
-    margin: 5px;
-    border-radius: 5px;
-}
-
 #history-list {
     border-top: 1px grey solid;
 }
