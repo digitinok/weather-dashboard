@@ -24,12 +24,12 @@ let renderCitySearchHistory = () => {
   const cities = JSON.parse(localStorage.getItem('cities'));
   // return if there are no cities saved in local storage
   if (cities === null) {return}
-  for (let i=0; i<cities.length; i++) {
-    if (cities[i] === null) {return}
-    let itemEl = $("<li>").text(cities[i].name);
-    itemEl.attr("data-city", cities[i].name);
-    itemEl.attr("data-lon", cities[i].lon);
-    itemEl.attr("data-lat", cities[i].lat);
+  for (const city in cities) {
+    if (cities[city] === null) {return}
+    let itemEl = $("<li>").text(cities[city].name);
+    itemEl.attr("data-city", cities[city].name);
+    itemEl.attr("data-lon", cities[city].lon);
+    itemEl.attr("data-lat", cities[city].lat);
     // display weather data
     itemEl.on("click", getWeather);
     historyListEl.append(itemEl);
@@ -105,7 +105,7 @@ $(window).on('load', () => {
   // initialise cities array, get cities from local storage
   let cities = JSON.parse(localStorage.getItem('cities'));
   console.log(cities);
-  if (cities === null) {cities = []}
+  if (cities === null) {cities = {};}
 
   // get city from search input with the submit button
   let searchButton = $("#search-button")
@@ -116,17 +116,16 @@ $(window).on('load', () => {
 
     // check if city is already in list
     if (city === "") {return}
-    for (let i=0; i<cities.length; i++) {
+    //for (let i=0; i<cities.length; i++) {
 
-      if (cities[i].name.toLowerCase() === city) {
+      if (city in cities) {
         // display city name, weather, forcast and return
-        let data = $("#history-list").children()[i].dataset;
-        $("#city").text(`${data.city}`);
-        getCurrentWeather("weather", data.lat, data.lon, APIKey);
-        getForcastWeather("forecast", data.lat, data.lon, APIKey);
+        $("#city").text(`${cities[city].name}`);
+        getCurrentWeather("weather", cities[city].lat, cities[city].lon, APIKey);
+        getForcastWeather("forecast", cities[city].lat, cities[city].lon, APIKey);
         return
       } 
-    } 
+    //} 
     // get longitude and latitude for the new city 
     // created an AJAX call for location data 
     $.ajax({
@@ -137,12 +136,18 @@ $(window).on('load', () => {
       if (response.length >   0) {
         console.log(response)
         // searched cities saved to local storage and buttons rendered
-        cities.push(response[0]); 
+        cities[city] = {
+          name: response[0].name,
+          lat: response[0].lat,
+          lon: response[0].lon,
+          country: response[0].country}; 
+
         localStorage.setItem("cities", JSON.stringify(cities));
         renderCitySearchHistory();
-        $("#city").text(`${response[0].name} ${response[0].country}`);
-        getForcastWeather("forecast", response[0].lat, response[0].lon, APIKey);
-        getCurrentWeather("weather", response[0].lat, response[0].lon, APIKey);
+        // display city name, weather, forcast and return
+        $("#city").text(`${cities[city].name}`);
+        getCurrentWeather("weather", cities[city].lat, cities[city].lon, APIKey);
+        getForcastWeather("forecast", cities[city].lat, cities[city].lon, APIKey);
       } else {
         alert(`Sorry, I could not find the place you are looking for!`);
       }
